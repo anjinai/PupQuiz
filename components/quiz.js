@@ -1,28 +1,58 @@
-import React from 'react';
+import React, {Component, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+// If I can get firebase to work, use this.
+import db from '../src/config.js';
+// If I can't use the question data in the below data file.
+import {data} from '../src/quizdata.js';
 
 const Quiz = ({navigation}) => {
-  const {text, container, options, bottom, button, answerButton, buttonText} =
-    styles;
+  const allQuestions = data;
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [score, setScore] = useState(0);
+  const questionAmt = allQuestions.length;
+
+  const {text, container, bottom, button, answerButton, buttonText} = styles;
+
+  const displayQuestion = () => {
+    return (
+      <View style={bottom}>
+        <Text style={text}>{allQuestions[currentQuestionIndex].question}</Text>
+      </View>
+    );
+  };
+
+  const checkAnswer = clickedChoice => {
+    let answer = allQuestions[currentQuestionIndex].correctAnswer;
+    if (clickedChoice === answer) {
+      setScore(score + 1);
+    }
+    console.log(score);
+    if (currentQuestionIndex === allQuestions.length - 1) {
+      navigation.navigate('Results', {score: score, questionAmt: questionAmt});
+    } else {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    }
+  };
+
+  const displayChoices = () => {
+    return (
+      <View>
+        {allQuestions[currentQuestionIndex].choices.map(choice => (
+          <TouchableOpacity
+            onPress={() => checkAnswer(choice)}
+            key={choice}
+            style={answerButton}>
+            <Text style={text}>{choice}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
   return (
     <View style={container}>
-      <View style={bottom}>
-        <Text style={text}>Who has a puppy named Cody?</Text>
-      </View>
-      <View style={options}>
-        <TouchableOpacity style={answerButton}>
-          <Text style={text}>Margareth</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={answerButton}>
-          <Text style={text}>Iris</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={answerButton}>
-          <Text style={text}>Tika</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={answerButton}>
-          <Text style={text}>Jess</Text>
-        </TouchableOpacity>
-      </View>
+      <Text> {displayQuestion()}</Text>
+      <Text>{displayChoices()}</Text>
       <View style={bottom}>
         <TouchableOpacity style={button}>
           <Text style={buttonText}>Skip</Text>
@@ -30,8 +60,13 @@ const Quiz = ({navigation}) => {
         <TouchableOpacity style={button}>
           <Text
             style={buttonText}
-            onPress={() => navigation.navigate('Results')}>
-            Submit
+            onPress={() =>
+              navigation.navigate('Results', {
+                score: score,
+                questionAmt: questionAmt,
+              })
+            }>
+            End Quiz
           </Text>
         </TouchableOpacity>
       </View>
@@ -58,6 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(246, 242, 240)',
     paddingHorizontal: 12,
     borderRadius: 12,
+    width: 345,
   },
   bottom: {
     marginBottom: 12,

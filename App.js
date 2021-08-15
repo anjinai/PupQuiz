@@ -4,7 +4,6 @@ import React from 'react';
 import Home from './components/home';
 import Quiz from './components/quiz';
 import Results from './components/results';
-import {StyleSheet, Text, View} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -21,10 +20,3 @@ const App = () => {
 };
 
 export default App;
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 40,
-    paddingHorizontal: 16,
-  },
-});

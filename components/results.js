@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 
-const Results = ({navigation}) => {
+const Results = ({route, navigation}) => {
   const {container, img, answerButton, buttonText, bottom, resultText} = styles;
+  const {score, questionAmt} = route.params;
   return (
     <View style={container}>
       <Image
@@ -13,7 +14,8 @@ const Results = ({navigation}) => {
       />
 
       <View>
-        <Text style={resultText}>Result </Text>
+        <Text style={resultText}>Results </Text>
+        <Text style={resultText}>{`${score}/${questionAmt}`} </Text>
       </View>
       <View style={bottom}>
         <TouchableOpacity style={answerButton}>
